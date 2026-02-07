@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serializers import RegisterSerializer, LoginSerializer
 
@@ -38,6 +39,15 @@ class LoginView(APIView):
 
 class ProfileView(APIView):
     authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request) -> Response:
+        user = request.user
+        return Response({'message': f'{user.username} profile'})
+    
+
+class ProfileJWTView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request: Request) -> Response:
