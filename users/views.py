@@ -12,7 +12,6 @@ from .serializers import RegisterSerializer, LoginSerializer
 
 
 class RegisterView(APIView):
-    
     def post(self, request: Request) -> Response:
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -22,19 +21,21 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
-
     def post(self, request: Request) -> Response:
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            username = serializer.validated_data['username']
-            password = serializer.validated_data['password']
+            username = serializer.validated_data["username"]
+            password = serializer.validated_data["password"]
 
             user = authenticate(request, username=username, password=password)
             if user:
                 token = Token.objects.create(user=user)
-                return Response({'token': token.key})
+                return Response({"token": token.key})
             else:
-                return Response({'error': 'invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response(
+                    {"error": "invalid credentials"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
 
 
 class ProfileView(APIView):
@@ -43,8 +44,8 @@ class ProfileView(APIView):
 
     def get(self, request: Request) -> Response:
         user = request.user
-        return Response({'message': f'{user.username} profile'})
-    
+        return Response({"message": f"{user.username} profile"})
+
 
 class ProfileJWTView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -52,5 +53,4 @@ class ProfileJWTView(APIView):
 
     def get(self, request: Request) -> Response:
         user = request.user
-        return Response({'message': f'{user.username} profile'})
-    
+        return Response({"message": f"{user.username} profile"})
